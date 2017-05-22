@@ -1,0 +1,18 @@
+---
+title: "Final_Qiang"
+author: "Qiang Fei"
+date: "2017年5月22日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Import trainging data
+
+```{r}
+lafdtraining <- read.csv("C:/Users/Auser/Downloads/lafdtraining.csv")
+View(lafdtraining)
+ 
+
+```
