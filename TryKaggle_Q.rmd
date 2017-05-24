@@ -1,0 +1,72 @@
+---
+title: "start"
+author: "Qiang Fei"
+date: "2017年5月22日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Import trainging data
+
+
+```{r}
+lafdtraining <- read.csv("C:/Users/Auser/Downloads/lafdtraining.csv")
+testing <- read.csv("C:/Users/Auser/Desktop/R/testing.without.response.csv")
+
+#As the values at fifth column are identical for all data, we just remove it.
+lafdtraining=lafdtraining[,-c(5)]
+testing=testing[,-c(5)]
+
+dim(lafdtraining) #2774370 observations
+training.nona=na.omit(lafdtraining)
+dim(training.nona)#2315060 observations
+length(na.omit(lafdtraining$elapsed_time))#2317430 observations
+```
+Most of NAs occur in the response variable, so I remove all observations with any NA.
+
+training.nona is the training data without NA.
+
+Now I do a check for testing data
+```{r}
+dim(testing) #530352 observations
+dim(na.omit(testing)) #529836 observations
+```
+There are NAs in some observatons of testing data.for the column "Dispatch.Sequence" and  We probably need to take care of them later.
+
+```{r}
+summary(training.nona)
+```
+
+
+A try on lasso!
+```{r}
+dim(training.nona)
+2315060*0.7
+set.seed(222)
+n = sample(2315060,1620542)
+#View(training.nona)
+tr=training.nona[n,]
+te=training.nona[-n,]
+m1 = lm(elapsed_time~year+First.in.District,tr)
+predicted =predict(m1,newdata=teee,type="response")
+
+teee=te[1:10,]
+mean((predicted-teee$elapsed_time)^2)
+teee$predicted=predicted
+
+
+#now try the real one
+predicted =predict(m1,newdata=testing,type="response")
+model=testing
+model$prediction=predicted
+model=model[,c(1,10)]
+View(model)
+
+write.csv(model,file="try.csv",row.names = F)
+help(write.csv)
+getwd()
+
+```
+
