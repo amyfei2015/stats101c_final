@@ -1,0 +1,74 @@
+#want to get the hour time
+
+tt_time=training.nona
+n=length(training.nona$Incident.Creation.Time..GMT.)
+#add a vector of hour !!!
+tt_time$ICHour=ICHour
+View(tt_time)
+dim(training.nona)
+for(i in 1:2315060)
+{
+ICHour1[i]=as.numeric(substr(training.nona$Incident.Creation.Time..GMT.[i],start=1, stop=2))
+}
+ICHour=ICHour1
+
+save(ICHour1,file="C:/Users/Auser/Desktop/Ihour.rda")
+Training_adj=tt_time
+save(Training_adj,file="C:/Users/Auser/Desktop/Training_adj.rda")
+
+
+View(Training_adj)
+
+
+
+
+dim(training.nona)
+2315060*0.7
+set.seed(222)
+n = sample(2315060,1620542)
+#View(training.nona)
+tr=Training_adj[n,]
+te=Training_adj[-n,]
+m1 = lm(elapsed_time~year+First.in.District+Dispatch.Sequence+PPE.Level+fixed(ICHour),tr)
+
+ttt=tr[1:1000,c(10,11)]
+library(plyr)
+time_hour=ddply(tr,.(ICHour),
+         summarize,
+         mean_time=mean(elapsed_time)
+         )
+View(time_hour)
+plot(mean_time~ICHour,data=time_hour)
+
+
+tt_700=subset(tr,elapsed_time>2000)
+
+table(tt_700$ICHour)
+View(tt_700)
+
+
+class(tr$Unit.Type)
+table(tr$ICHour)
+View(tr)
+predicted =predict(m1,newdata=teee,type="response")
+
+
+
+
+#Codes for prediction
+teee=te[1:10,]
+mean((predicted-teee$elapsed_time)^2)
+teee$predicted=predicted
+
+
+#now try the real one
+predicted =predict(m1,newdata=testing,type="response")
+model=testing
+model$prediction=predicted
+model=model[,c(1,10)]
+View(model)
+
+write.csv(model,file="try.csv",row.names = F)
+help(write.csv)
+getwd()
+
