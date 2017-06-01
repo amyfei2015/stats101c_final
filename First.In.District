@@ -1,0 +1,21 @@
+summary(factor(Training_adj$First.in.District))
+
+elapsed_mean<-c()
+elapsed_var<-c()
+diff<-c()
+diff[1]<-0
+for(i in 1:112){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$First.in.District==i),]$elapsed_time)
+  elapsed_var[i]<-var(Training_adj[which(Training_adj$First.in.District==i),]$elapsed_time)
+  if(i>1) diff[i]<-elapsed_mean[i]-elapsed_mean[i-1]
+}
+diff
+elapsed_mean
+elapsed_var
+plot(1:112,elapsed_mean,type="l")
+
+district_time<-data.frame(district=1:112,time=elapsed_mean,variance=elapsed_var)
+district_time<-district_time[order(district_time$time),]
+par(mfrow=c(1,2))
+plot(district_time$time)
+plot(district_time$variance)
