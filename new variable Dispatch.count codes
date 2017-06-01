@@ -1,0 +1,18 @@
+train<-read.csv("/Users/lingjuexie/Downloads/lafdtraining.csv")
+load("/Users/lingjuexie/Downloads/Training_adj.rda")
+
+
+Training_adj$Dispatch.count <- table(Training_adj$incident.ID)[Training_adj$incident.ID]
+#View(Training_adj)
+
+summary(factor(Training_adj$Dispatch.count))
+
+elapsed_mean<-c()
+diff<-c()
+diff[1]<-0
+for(i in 1:101){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$Dispatch.count==i),]$elapsed_time)
+  if(i>1) diff[i]<-elapsed_mean[i]-elapsed_mean[i-1]
+}
+diff
+plot(1:101,elapsed_mean,type="l")
