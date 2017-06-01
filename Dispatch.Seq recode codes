@@ -1,0 +1,119 @@
+train<-read.csv("/Users/lingjuexie/Downloads/lafdtraining.csv")
+load("/Users/lingjuexie/Downloads/Training_adj.rda")
+#train_adj<-read.csv("/Users/lingjuexie/Downloads/Training_adj.csv")
+#str(train)
+#summary(train)
+#summary(factor(train$year))
+#summary(factor(train$First.in.District))
+#summary(factor(train$Dispatch.Sequence))
+#summary(factor(train$First.in.District))
+#summary(factor(train$Dispatch.Status))
+#summary(factor(train$Unit.Type))
+#summary(train$Incident.Creation.Time..GMT.)
+#summary(factor(train$elapsed_time))
+#View(train)
+
+
+summary(factor(train$Dispatch.Sequence))
+
+elapsed_mean<-c()
+diff<-c()
+diff[1]<-0
+for(i in 1:109){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+  if(i>1) diff[i]<-elapsed_mean[i]-elapsed_mean[i-1]
+}
+diff
+plot(1:109,elapsed_mean,type="l")
+
+
+elapsed_mean<-c()
+for(i in 1:12){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+elapsed_mean
+plot(1:12,elapsed_mean,type="l")
+
+
+#1-5 
+elapsed_mean<-c()
+for(i in 1:5){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(1:5,elapsed_mean,type="l")
+
+
+
+#6-11 use 11 only
+elapsed_mean<-c()
+for(i in 5:11){
+  elapsed_mean[i-4]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(5:11,elapsed_mean,type="l")
+
+
+
+#12-15 separately
+elapsed_mean<-c()
+for(i in 12:15){
+  elapsed_mean[i-11]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(12:15,elapsed_mean,type="l")
+
+
+#16-109 
+elapsed_mean<-c()
+for(i in 16:109){
+  elapsed_mean[i-15]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(16:109,elapsed_mean,type="l")
+
+
+#16-35 use 26 only
+elapsed_mean<-c()
+for(i in 16:35){
+  elapsed_mean[i-15]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(16:35,elapsed_mean,type="l")
+
+
+#36-60 use 50 only
+elapsed_mean<-c()
+for(i in 36:60){
+  elapsed_mean[i-35]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(36:60,elapsed_mean,type="l")
+
+
+
+#61-90 use 80 only
+elapsed_mean<-c()
+for(i in 61:90){
+  elapsed_mean[i-60]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(61:90,elapsed_mean,type="l")
+
+
+#91-109 or others use 101 only
+elapsed_mean<-c()
+for(i in 91:109){
+  elapsed_mean[i-90]<-mean(Training_adj[which(Training_adj$Dispatch.Sequence==i),]$elapsed_time)
+}
+plot(91:109,elapsed_mean,type="l")
+
+
+#create a new variable Dispatch.Sequence.new in order not touch the original data
+Training_adj$Dispatch.Sequence.new<-Training_adj$Dispatch.Sequence
+
+Training_adj[Training_adj$Dispatch.Sequence>=6 &Training_adj$Dispatch.Sequence<=11,]$Dispatch.Sequence.new<-11
+
+Training_adj[Training_adj$Dispatch.Sequence>=16 &Training_adj$Dispatch.Sequence<=35,]$Dispatch.Sequence.new<-26
+
+Training_adj[Training_adj$Dispatch.Sequence>=36 &Training_adj$Dispatch.Sequence<=60,]$Dispatch.Sequence.new<-50
+
+Training_adj[Training_adj$Dispatch.Sequence>=61 &Training_adj$Dispatch.Sequence<=90,]$Dispatch.Sequence.new<-80
+
+Training_adj[!(Training_adj$Dispatch.Sequence>=1 &Training_adj$Dispatch.Sequence<=90),]$Dispatch.Sequence.new<-101
+
+
+summary(factor(Training_adj$Dispatch.Sequence.new))
