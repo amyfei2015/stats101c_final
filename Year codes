@@ -1,0 +1,11 @@
+load("/Users/lingjuexie/Desktop/Training_adj.rda")
+elapsed_mean<-c()
+elapsed_var<-c()
+diff<-c()
+diff[1]<-0
+for(i in 1:4){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$year==i+2012),]$elapsed_time)
+  elapsed_var[i]<-var(Training_adj[which(Training_adj$year==i+2012),]$elapsed_time)
+  if(i>1) diff[i]<-elapsed_mean[i]-elapsed_mean[i-1]
+}
+plot(2013:2016,elapsed_mean,type="l")
