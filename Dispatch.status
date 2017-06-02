@@ -1,0 +1,20 @@
+load("/Users/lingjuexie/Desktop/Training_adj.rda")
+dispatch.status<-names(table(Training_adj$Dispatch.Status))
+
+elapsed_mean<-c()
+elapsed_var<-c()
+diff<-c()
+diff[1]<-0
+for(i in 1:12){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$Dispatch.Status==dispatch.status[i]),]$elapsed_time)
+  elapsed_var[i]<-var(Training_adj[which(Training_adj$Dispatch.Status==dispatch.status[i]),]$elapsed_time)
+  if(i>1) diff[i]<-elapsed_mean[i]-elapsed_mean[i-1]
+}
+plot(1:12,elapsed_mean, xaxt = "n")
+axis(1, at=1:12, labels=dispatch.status,cex.axis=0.7)
+
+plot(1:12,elapsed_var, xaxt = "n")
+axis(1, at=1:12, labels=dispatch.status,cex.axis=0.7)
+
+table(factor(Training_adj$Dispatch.Status))
+data.frame(dispatch.status,elapsed_mean)
