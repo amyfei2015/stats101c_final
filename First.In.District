@@ -1,4 +1,4 @@
-summary(factor(Training_adj$First.in.District))
+table(factor(Training_adj$First.in.District))
 
 elapsed_mean<-c()
 elapsed_var<-c()
@@ -19,3 +19,33 @@ district_time<-district_time[order(district_time$time),]
 par(mfrow=c(1,2))
 plot(district_time$time)
 plot(district_time$variance)
+
+
+plot(district_time$time[1:70])
+
+plot(district_time$time[71:112])
+
+# new variable District Order
+Training_adj$District.Order<-1
+#View(Training_adj)
+district_time<-na.omit(district_time)
+#View(district_time)
+for(i in 1:112){
+    Training_adj[which(Training_adj$First.in.District==i),]$District.Order<-district_time[which(district_time$district==i),]$order
+}
+
+# check the District order 
+elapsed_mean<-c()
+elapsed_var<-c()
+
+for(i in 1:102){
+  elapsed_mean[i]<-mean(Training_adj[which(Training_adj$District.Order==i),]$elapsed_time)
+  elapsed_var[i]<-var(Training_adj[which(Training_adj$District.Order==i),]$elapsed_time)
+}
+elapsed_mean
+elapsed_var
+plot(1:102,elapsed_mean,type="l")
+
+#save(Training_adj,file="/Users/lingjuexie/Desktop/Training_adj.rda")
+table(Training_adj$District.Order)
+#str(Training_adj)
