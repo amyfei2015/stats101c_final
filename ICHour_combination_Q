@@ -10,3 +10,17 @@ From the t.test of mean elapsed time, the results for ICHours are roughly:
 17
 18
 19=20
+
+From the rough time, a group is deducted
+21=22=23        497           4      
+0=1=2=3        479            2
+4              460            1
+5              488            3       
+6=7=8           508           5       
+9               965           7     
+10=11=12=13      523          6       
+14=15            490          3         
+16              478           2
+17              495           4
+18              512           5        
+19=20           486           3 
