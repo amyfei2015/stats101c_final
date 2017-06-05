@@ -1,0 +1,39 @@
+Now I should divide ICHours into sub categories
+```{r}
+index = summary(factor(Training_adj$Unit.Type))
+t.test()
+?t.test
+tt=subset(Training_adj, Unit.Type==15 )
+ttt=subset(Training_adj, ICHour==16)
+t=rbind(tt,ttt)
+t.test(elapsed_time ~ factor(ICHour), data = t)
+te=Training_adj[,c("elapsed_time","ICHour")]
+
+
+library(plyr)
+x=ddply(Training_adj,.(Unit.Type),summarize,mean=mean(elapsed_time))
+View(x)
+x$count=index
+```
+21=22=23        497           4      
+0=1=2=3        479            2
+4              460            1
+5              488            3       
+6=7=8           508           5       
+9               965           7     
+10=11=12=13      523          6       
+14=15            490          3         
+16              478           2
+17              495           4
+18              512           5        
+19=20           486           3  
+
+##create the new vector
+```{r}
+dim(Training_adj)
+testing_adj2$Hour.new<-3
+testing_adj2[testing_adj2$ICHour==18,]$Hour.new<-5
+testing_adj3=testing_adj2
+save(testing_adj3,file="C:/Users/Auser/Desktop/testing_adj3.rda")
+
+```
