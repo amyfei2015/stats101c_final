@@ -87,9 +87,7 @@ training_final$elapsed_time=as.numeric(training_final$Dispatch.count)
 
 
 ##############################################################TESTING
-###########################[[[need to double check the newest vars]]]
 ##############CLEANING DATA
-#[[[skipped]]]
 testing_without_response <- read_csv("~/Desktop/Statistics 101C/final project/testing.without.response.txt")
 testing_final <- testing_without_response
 #Here we change the NA in dispach sequence with more than 2 vhicles sent by hand
@@ -153,6 +151,8 @@ tt$Dispatch.count=as.numeric(testing_final$Dispatch.count)
 
 
 
+
+
 ##############################################################DUMMY VARIABLES
 library(car) 
 library(caret) 
@@ -160,61 +160,66 @@ library(RCurl)
 library(lubridate)
 ##############################################################TRAINING
 View(training_final)
-try <- training_final[,c(1:6,8,16)]##[[[might need to change the number here]]]
+try <- training_final[,c(1:6,8,16)]
 dmy <- dummyVars("~.", data=try)
 
 train_used <- data.frame(predict(dmy, newdata = try))
-outcome <- c('elapsed_time')
-predictors <- names(train_used)[!names(train_used) %in% outcome]
 
 save(train_used,file = "train_used.rda")
 
 
 ##############################################################TESTING
 View(testing_final)
-
 try2 <- testing_final[,c(1:6,8,14)]
 dmy2 <- dummyVars("~.", data=try2)
-#training_final$ICHourDiv_dmy=dmy(training_final$ICHourDiv)
 
-View(dmy2)
 test_used <- data.frame(predict(dmy2, newdata = try2))
-outcome <- c('elapsed_time')
-
 
 save(test_used,file = "test_used.rda")
 
 
-##clean: TRAINING has more levels than TESTING in "dispatch status"
+##predictors and response
+outcome <- c('elapsed_time')
 predictors.train <- names(train_used)[!names(train_used) %in% outcome]
 predictors.test <- names(test_used)[!names(test_used) %in% outcome]
+
+##clean: TRAINING has more levels than TESTING in "dispatch status,"
+##so we delete the levels in training that testing doesn't have.
 train_used<-train_used[,-139]
 train_used<-train_used[,-142]
 train_used<-train_used[,-144]
 
-predictors.test==predictors.train #check if they have the same now
-predictors<-predictors.test
-
 save(train_used,file = "train_used.clean.rda")
 
+
 #add the new variables
-train_used[,"elapsed_time"]=training_final$elapsed_time
 train_used$"Dispatch.count"=training_final$Dispatch.count
 test_used[,"Dispatch.count"]=testing_final$Dispatch.count
+train_used[,"elapsed_time"]=training_final$elapsed_time
 
+predictors.train <- names(train_used)[!names(train_used) %in% outcome]
+predictors.test <- names(test_used)[!names(test_used) %in% outcome]
 
-
+predictors.test==predictors.train #check if they have the same levels now: YES
+predictors<-predictors.test
 
 
 
 ##############################################################MODELS + PREDICTIONS
 library(xgboost)
-xgb.fit <- xgboost(data = data.matrix(train_used[,predictors]),
-                   label = data.matrix(train_used[,outcome]),
-                   max.depth=5, nround=11, objective = "reg:linear", verbose=0)
-pred <- predict(xgb.fit, data.matrix(test_used[,predictors]), outputmargin=TRUE)
-#Here we compare the five-number summary and try the models whos distribution of prediction is close to the distribution of training elapsed_time
+xgb.fit <- xgboost(data = data.matrix(trainTrsf[,predictors]),
+                     label = data.matrix(trainTrsf[,outcomeName]),eta=0.3,
+                     max.depth=5, nround=12, objective = "reg:linear")
+pred <- predict(xgb.fit, data.matrix(testTrsf[,predictors]), outputmargin=TRUE)
+#Here we compare the five-number summary and try the models whose distribution 
+#of prediction is close to the distribution of training elapsed_time
 summary(pred)
-summary(train_used$elapsed_time)
+summary(trainTrsf$elapsed_time)
+
+
+fin=testing_final
+fin$prediction=pred
+fin=fin[,c(11,15)]
+write.csv(fin,file = "pred512eta0.3.csv",row.names = F) #5,12,0.3
 
 
