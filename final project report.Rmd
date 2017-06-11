@@ -60,6 +60,8 @@ After we found the optimal parameters according to cross validation, we tried mo
 
   
 ##EVALUATION
+  Overall, our model did a good job in predictions. And this model works well for the following reasons:
+  
   First, Extreme gradient boosting is a good choice due to its own algorithm. It starts with parts of variation that is easier to be explained
 and then gradually improves.
 
