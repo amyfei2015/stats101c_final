@@ -2,9 +2,13 @@
 ###Lingjue Xie
 ###Zheqin Li
 
+
+#The data.frame we used, named testing_final and training_final are submitted with the file 
+#since some adjustments on testing data are not done by coding
+
+
 ##############################################################TRAINING
 ##############CLEANING DATA  
-#The data.frame we used, named test_used and train_used are submitted with the file since some adjustments on testing data are not done by coding
 lafdtraining <- read.csv("~/Desktop/Statistics 101C/final project/lafdtraining.csv")
 training_final <- na.omit(lafdtraining)
 
@@ -148,7 +152,7 @@ tt$Dispatch.count=as.numeric(testing_final$Dispatch.count)
 ##########################################  
 ##As some operations on the data.frame are done without codes, we submit the data.frames we have unntil this point.
 ##All the changes afterwards are produced by the codes below
-
+##########################################  
 
 
 
@@ -207,14 +211,15 @@ predictors<-predictors.test
 
 ##############################################################MODELS + PREDICTIONS
 library(xgboost)
-xgb.fit <- xgboost(data = data.matrix(trainTrsf[,predictors]),
-                     label = data.matrix(trainTrsf[,outcomeName]),eta=0.3,
+xgb.fit <- xgboost(data = data.matrix(train_used[,predictors]),
+                     label = data.matrix(train_used[,outcomeName]),eta=0.3,
                      max.depth=5, nround=12, objective = "reg:linear")
-pred <- predict(xgb.fit, data.matrix(testTrsf[,predictors]), outputmargin=TRUE)
+#max.depth=5, nround=12, eta=0.3
+pred <- predict(xgb.fit, data.matrix(test_used[,predictors]), outputmargin=TRUE)
 #Here we compare the five-number summary and try the models whose distribution 
 #of prediction is close to the distribution of training elapsed_time
 summary(pred)
-summary(trainTrsf$elapsed_time)
+summary(train_used$elapsed_time)
 
 
 fin=testing_final
